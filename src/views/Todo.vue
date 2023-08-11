@@ -1,22 +1,11 @@
 <template>
   <div class="home">
-    <v-text-field
-      v-model="newTaskTitle"
-      @click:append="addTask"
-      @keyup.enter="addTask"
-      class="pa-3"
-      outlined
-      label="Add Task"
-      append-icon="mdi-plus"
-      hide-details
-      clearable
-    >
-    </v-text-field>
+    <field-add-task />
 
     <v-list v-if="$store.state.tasks.length" class="pt-0" flat>
       <div v-for="task in $store.state.tasks" :key="task.id">
         <v-list-item
-          @click="doneTask(task.id)"
+          @click="$store.commit('doneTask', task.id)"
           :class="{ 'blue lighten-5': task.done }"
         >
           <template v-slot:default>
@@ -33,7 +22,7 @@
             </v-list-item-content>
 
             <v-list-item-action>
-              <v-btn @click.stop="deleteTask(task.id)" icon>
+              <v-btn @click.stop="$store.commit('deleteTask', task.id)" icon>
                 <v-icon color="primary lighten-1">mdi-delete</v-icon>
               </v-btn>
             </v-list-item-action>
@@ -52,23 +41,8 @@
 <script>
 export default {
   name: 'Home',
-  data() {
-    return {
-      newTaskTitle: '',
-    };
-  },
-  methods: {
-    addTask() {
-      this.$store.commit('addTask', this.newTaskTitle);
-      this.newTaskTitle = '';
-    },
-    doneTask(id) {
-      let task = this.tasks.filter((task) => task.id === id)[0];
-      task.done = !task.done;
-    },
-    deleteTask(id) {
-      this.tasks = this.tasks.filter((task) => task.id !== id);
-    },
+  components: {
+    'field-add-task': require('@/components/Todo/FieldAddTask.vue').default,
   },
 };
 </script>
